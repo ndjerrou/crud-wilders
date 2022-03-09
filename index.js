@@ -1,43 +1,24 @@
 const express = require('express') // a bare path
 const mongoose = require('mongoose')
+const morgan = require('morgan')
 
-const connect = require("./db/connect")
+const connect = require("./utilities/connect")
 const wilder = require("./models/Wilder")
+
+ const wilderRouter = require('./ressources/wilder/wilder.controller')
+
+const app = express()
+// app.use((req, res, next)=>{
+//     console.log('kikoo, je suis un middleware')
+//     next()
+// })
+
+app.use(morgan('dev'))
+
+app.use('/api/wilders', wilderRouter)
 
 connect()
 
-const app = express()
-
-app.get('', (req, res)=>{
-    console.log(req)
-    res.send({success: true, data: {title: 'Welcome to my website'}})
-})
-
-app.get('/createUser', async(req, res)=>{
-
-    const Pierre = new wilder({
-        name: 'Sarah',
-        city: 'Toulouse',
-        skills: [
-            {
-                title: 'HTML',
-                votes: 10
-            },
-            {
-                title: 'CSS',
-                votes: 15
-            }
-        ]
-    })
-    
-    try
-    {
-        await Pierre.save()
-        res.send(Pierre)
-    }
-    catch(err){ console.error(err.message)}
-
-})
 
 
 const PORT = 3000
